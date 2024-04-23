@@ -3,18 +3,21 @@ import asyncio
 import time
 from bs4 import BeautifulSoup
 
+# fetch webpage content
 async def fetch(session, url):
     async with session.get(url) as response:
         return await response.text()
-
+        
+# extract price from webpage content
 def extract_price(html):
     soup = BeautifulSoup(html, 'html.parser')
-    price_element = soup.find('span', {'class': 'a-offscreen'})
+    price_element = soup.find('span', {'class': 'a-offscreen'}) # find price element
     if price_element:
         return price_element.text
     else:
         return None
-
+        
+# monitor price
 async def monitor(url, interval):
     async with aiohttp.ClientSession() as session:
         last_price = None
@@ -30,5 +33,5 @@ async def monitor(url, interval):
             last_price = price
             await asyncio.sleep(interval)
 
-# Python 3.7+
-asyncio.run(monitor('https://www.amazon.sg/GeForce-Founders-Graphics-GDDR6X-Titanium/dp/B0BLCBLCDR', 5))
+# monitor with 5 sec interval
+asyncio.run(monitor('https://linkwhichyouwantomonitor', 5))
